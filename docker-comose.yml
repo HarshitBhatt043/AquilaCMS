@@ -1,0 +1,37 @@
+networks:
+  aquila:
+    driver: bridge
+
+services:
+  mongo:
+    image: mongo # Specify MongoDB 4.4 or an earlier version if "grep flags -m1 /proc/cpuinfo | grep avx" does not gives any result
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - aquila
+    restart: unless-stopped
+
+  aquila:
+    image: aquilacms/aquilacms
+    container_name: aquila
+    ports:
+      - "127.0.0.1:3010:3010"
+#    environment:
+#      MONGODB_URI: "mongodb://mongo:27017/aquilacms"
+#      LANGUAGE: "${LANGUAGE}"
+#      FIRSTNAME: "${FIRSTNAME}"
+#      LASTNAME: "${LASTNAME}"
+#      EMAIL: "${EMAIL}"
+#      PASSWORD: "${PASSWORD}"
+#      APPURL: "${APPURL}"
+#      ADMIN_PREFIX: "${ADMIN_PREFIX}"
+#      SITENAME: "${SITENAME}"
+    networks:
+      - aquila
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "mongo --eval 'quit()' || exit 1"]
+      start_period: 30s
