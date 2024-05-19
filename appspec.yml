@@ -1,0 +1,26 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/AquilaCMS
+hooks:
+  AfterInstall:
+    - location: /bin/bash
+      timeout: 300
+      runas: ubuntu
+      script: |
+        cd /home/ubuntu/AquilaCMS
+        yarn install
+  ApplicationStart:
+    - location: /bin/bash
+      timeout: 300
+      runas: ubuntu
+      script: |
+        cd /home/ubuntu/AquilaCMS
+        npm start
+  ValidateService:
+    - location: /bin/bash
+      timeout: 300
+      runas: ubuntu
+      script: |
+        curl -f http://localhost:3010 || exit 1
