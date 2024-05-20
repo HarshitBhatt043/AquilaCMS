@@ -24,6 +24,8 @@ sudo apt dist-upgrade -y && sudo apt-get install gnupg -y
 wget -qO - https://pgp.mongodb.com/server-6.0.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.0.gpg
 echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
 sudo apt-get update && sudo apt-get install -y mongodb-org && sudo systemctl enable mongod && sudo systemctl start mongod
+sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf
+sudo systemctl restart mongod
 
 echo "Installing codedeploy-agent"
 sudo apt update && sudo apt upgrade -y
